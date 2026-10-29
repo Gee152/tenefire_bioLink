@@ -205,8 +205,8 @@ export default function BioLinksBeach() {
     },
     {
       id: "envios-tenerife",
-      name: "Envíos & Retirada en Tienda",
-      actionText: "Envíos en 24/72h o recogida en Calle Los Calados, 1",
+      name: "Ventas en línea",
+      actionText: "Envíos en 24/72h",
       badgeColor: "moss",
       icon: Truck,
       isExternal: true,
