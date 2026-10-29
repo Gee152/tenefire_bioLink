@@ -129,7 +129,7 @@ export default function BioLinksBeach() {
       name: "Atendimento VIP WhatsApp",
       actionText: "Falar com uma consultora de estilo agora",
       badge: "Mais Rápido",
-      badgeColor: "coral",
+      badgeColor: "gold",
       icon: WhatsAppIcon,
       isExternal: true,
       href: getWhatsAppUrl("¡Hola Tenerife Beach! Vengo del enlace de la bio y quiero hablar con una asesora para elegir mis piezas."),
@@ -139,7 +139,7 @@ export default function BioLinksBeach() {
       name: "Coleção & Catálogo 2026",
       actionText: "Ver Kits Família, Biquínis & Peças Modeladoras",
       badge: "Catálogo",
-      badgeColor: "turquoise",
+      badgeColor: "moss",
       icon: ShoppingBag,
       onClick: () => setIsCatalogModalOpen(true),
     },
@@ -148,7 +148,7 @@ export default function BioLinksBeach() {
       name: "Guia de Tamanhos (Brasil ⇄ Espanha)",
       actionText: "Descubra sua numeração exata (P, M, G vs 36 a 44)",
       badge: "Tabela Oficial",
-      badgeColor: "turquoise",
+      badgeColor: "gold",
       icon: Ruler,
       onClick: () => setIsSizeGuideOpen(true),
     },
@@ -157,7 +157,7 @@ export default function BioLinksBeach() {
       name: "Envíos & Retirada en Tienda",
       actionText: "Envíos en 24/72h a Canarias y punto en Tenerife Sur",
       badge: "Islas Canarias",
-      badgeColor: "gold",
+      badgeColor: "moss",
       icon: Truck,
       isExternal: true,
       href: getWhatsAppUrl("¡Hola! Me gustaría saber cómo funcionan los envíos a mi isla o la recogida presencial en Tenerife."),
@@ -261,20 +261,12 @@ export default function BioLinksBeach() {
             fetchPriority="high"
           />
 
-          {/* Badge Flutuante de Localização Tropical */}
-          <div className="absolute top-16 left-4 z-20">
-            <span className="beach-glass bg-black/40 text-white border border-white/20 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-lg">
-              <span className="w-2 h-2 rounded-full bg-[#14B8A6] animate-pulse"></span>
-              <span>{brand.locationShort}</span>
-            </span>
-          </div>
-
           {/* Gradiente Inferior de Transição em Fade Suave */}
           <div
-            className={`absolute inset-x-0 bottom-0 h-48 sm:h-56 pointer-events-none ${
+            className={`absolute inset-x-0 bottom-0 h-56 sm:h-64 pointer-events-none ${
               !isDark
-                ? "bg-gradient-to-t from-[#FFFDF9] via-[#FFFDF9]/90 to-transparent"
-                : "bg-gradient-to-t from-[#0F1622] via-[#0F1622]/90 to-transparent"
+                ? "bg-gradient-to-t from-[#FFFDF9] via-[#FFFDF9]/95 via-40% to-transparent"
+                : "bg-gradient-to-t from-[#0F1622] via-[#0F1622]/95 via-40% to-transparent"
             }`}
           />
         </div>
@@ -282,23 +274,31 @@ export default function BioLinksBeach() {
         {/* =========================================================================
             2. CONTEÚDO PRINCIPAL (IDENTIDADE, LOGO, BOTÕES TÁTEIS E CARDS)
            ========================================================================= */}
-        <div className="relative z-10 px-4 sm:px-6 -mt-[260px] sm:-mt-[285px] pb-4 sm:pb-6 flex-1 flex flex-col justify-between">
+        <div className="relative z-10 px-4 sm:px-6 -mt-[300px] sm:-mt-[330px] pb-4 sm:pb-6 flex-1 flex flex-col justify-between">
           <div className="space-y-3 sm:space-y-4 my-auto">
             {/* Bloco de Marca: Logo e Selo Oficial */}
-            <div className="text-center space-y-1.5 pointer-events-auto">
+            <div className="text-center space-y-2 pointer-events-auto">
               <LogoTenerifeBeach isDark={isDark} />
 
               <p
-                className={`text-[12px] sm:text-[13px] font-medium leading-snug px-3 max-w-[340px] mx-auto transition-colors ${
-                  !isDark ? "text-slate-600" : "text-slate-300"
+                className={`text-[12px] sm:text-[13px] font-bold leading-snug px-3 max-w-[340px] mx-auto transition-colors ${
+                  !isDark
+                    ? "text-[#1C3B1E] [text-shadow:_0_1px_4px_rgba(255,255,255,0.95)]"
+                    : "text-[#E2D4A8] drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
                 }`}
               >
                 {brand.tagline}
               </p>
 
-              {/* Tag com Selo de Autenticidade */}
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-[10px] font-extrabold tracking-wide uppercase transition-colors bg-[#0D9488]/10 text-[#0D9488] dark:bg-[#2DD4BF]/15 dark:text-[#2DD4BF] border border-[#0D9488]/20">
-                <ShieldCheck size={13} className="shrink-0" />
+              {/* Tag com Selo de Autenticidade em Verde Musgo & Dourado */}
+              <div
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-[10px] font-black tracking-wider uppercase transition-colors shadow-sm ${
+                  !isDark
+                    ? "bg-[#234E2A]/15 text-[#1C3B1E] border border-[#D4AF37]/60 [text-shadow:_0_1px_2px_rgba(255,255,255,0.9)]"
+                    : "bg-[#234E2A]/40 text-[#FBBF24] border border-[#D4AF37]/50 drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)]"
+                }`}
+              >
+                <ShieldCheck size={13} className={!isDark ? "text-[#C59B27] shrink-0" : "text-[#FBBF24] shrink-0"} />
                 <span>Modelagem Brasileira Autêntica</span>
               </div>
 
@@ -313,8 +313,8 @@ export default function BioLinksBeach() {
                   aria-label="Instagram da Tenerife Beach"
                   className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-300 group cursor-pointer shrink-0 ${
                     !isDark
-                      ? "bg-white border-2 border-slate-100 shadow-[0_6px_18px_rgba(13,148,136,0.12)] text-[#0A2540] hover:text-[#0D9488] hover:border-[#0D9488]/40 hover:scale-105 active:scale-95"
-                      : "bg-[#162032] border border-white/10 text-[#2DD4BF] shadow-[0_6px_18px_rgba(0,0,0,0.5)] hover:border-[#2DD4BF]/50 hover:scale-105 active:scale-95"
+                      ? "bg-white border-2 border-[#D4AF37]/40 shadow-[0_6px_18px_rgba(35,78,42,0.12)] text-[#1C3B1E] hover:text-[#C59B27] hover:border-[#C59B27] hover:scale-105 active:scale-95"
+                      : "bg-[#162032] border border-[#D4AF37]/40 text-[#FBBF24] shadow-[0_6px_18px_rgba(0,0,0,0.5)] hover:border-[#FBBF24] hover:scale-105 active:scale-95"
                   }`}
                 >
                   <Instagram size={22} className="transition-transform group-hover:scale-110" />
@@ -329,12 +329,12 @@ export default function BioLinksBeach() {
                   aria-label="Atendimento no WhatsApp Oficial"
                   className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-300 group cursor-pointer shrink-0 relative ${
                     !isDark
-                      ? "bg-white border-2 border-[#25D366]/50 shadow-[0_6px_20px_rgba(37,211,102,0.28)] text-[#25D366] hover:bg-[#25D366] hover:text-white hover:border-[#25D366] hover:scale-105 active:scale-95"
-                      : "bg-[#162032] border border-[#25D366]/40 text-[#25D366] shadow-[0_6px_20px_rgba(37,211,102,0.25)] hover:bg-[#25D366] hover:text-white hover:scale-105 active:scale-95"
+                      ? "bg-white border-2 border-[#25D366] shadow-[0_6px_20px_rgba(37,211,102,0.3)] text-[#25D366] hover:bg-[#25D366] hover:text-white hover:scale-105 active:scale-95"
+                      : "bg-[#162032] border border-[#25D366]/60 text-[#25D366] shadow-[0_6px_20px_rgba(37,211,102,0.25)] hover:bg-[#25D366] hover:text-white hover:scale-105 active:scale-95"
                   }`}
                 >
                   <WhatsAppIcon size={25} className="transition-transform group-hover:scale-110" />
-                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#25D366] border-2 border-white dark:border-[#0F1622] animate-pulse"></span>
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-[#D4AF37] border-2 border-white dark:border-[#0F1622] animate-pulse"></span>
                 </a>
 
                 {/* 3. Localização Google Maps */}
@@ -346,8 +346,8 @@ export default function BioLinksBeach() {
                   aria-label={`Localização: ${brand.locationFull}`}
                   className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-300 group cursor-pointer shrink-0 ${
                     !isDark
-                      ? "bg-white border-2 border-slate-100 shadow-[0_6px_18px_rgba(13,148,136,0.12)] text-[#0A2540] hover:text-[#0D9488] hover:border-[#0D9488]/40 hover:scale-105 active:scale-95"
-                      : "bg-[#162032] border border-white/10 text-[#2DD4BF] shadow-[0_6px_18px_rgba(0,0,0,0.5)] hover:border-[#2DD4BF]/50 hover:scale-105 active:scale-95"
+                      ? "bg-white border-2 border-[#D4AF37]/40 shadow-[0_6px_18px_rgba(35,78,42,0.12)] text-[#1C3B1E] hover:text-[#C59B27] hover:border-[#C59B27] hover:scale-105 active:scale-95"
+                      : "bg-[#162032] border border-[#D4AF37]/40 text-[#FBBF24] shadow-[0_6px_18px_rgba(0,0,0,0.5)] hover:border-[#FBBF24] hover:scale-105 active:scale-95"
                   }`}
                 >
                   <MapPin size={22} className="transition-transform group-hover:scale-110" />
@@ -378,24 +378,20 @@ export default function BioLinksBeach() {
                     {...componentProps}
                     className={`w-full p-3 sm:p-4 rounded-2xl flex items-center justify-between transition-all duration-300 group cursor-pointer text-left ${
                       !isDark
-                        ? "bg-white hover:bg-slate-50/80 border border-slate-200/90 hover:border-[#0D9488]/60 shadow-[0_4px_16px_rgba(13,148,136,0.06)] hover:shadow-[0_8px_24px_rgba(13,148,136,0.14)] hover:scale-[1.01]"
-                        : "bg-[#162032]/95 hover:bg-[#1C283E] border border-white/10 hover:border-[#2DD4BF]/50 shadow-md hover:shadow-lg hover:scale-[1.01]"
+                        ? "bg-white hover:bg-[#FDFBF7] border border-slate-200/90 hover:border-[#D4AF37]/70 shadow-[0_4px_16px_rgba(35,78,42,0.06)] hover:shadow-[0_8px_24px_rgba(212,175,55,0.18)] hover:scale-[1.01]"
+                        : "bg-[#162032]/95 hover:bg-[#1C283E] border border-white/10 hover:border-[#D4AF37]/50 shadow-md hover:shadow-lg hover:scale-[1.01]"
                     }`}
                   >
                     <div className="flex items-center gap-3 sm:gap-4 text-left min-w-0 flex-1">
-                      {/* Ícone com Fundo Diferenciado */}
+                      {/* Ícone com Fundo Diferenciado em Verde Musgo & Dourado */}
                       <div
                         className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                          link.badgeColor === "coral"
+                          link.badgeColor === "moss"
                             ? !isDark
-                              ? "bg-orange-50 text-[#F97316] group-hover:bg-[#F97316] group-hover:text-white group-hover:scale-110"
-                              : "bg-white/10 text-[#FB923C] group-hover:scale-110"
-                            : link.badgeColor === "turquoise"
-                            ? !isDark
-                              ? "bg-teal-50 text-[#0D9488] group-hover:bg-[#0D9488] group-hover:text-white group-hover:scale-110"
-                              : "bg-white/10 text-[#2DD4BF] group-hover:scale-110"
+                              ? "bg-emerald-50 text-[#234E2A] group-hover:bg-[#234E2A] group-hover:text-[#FBBF24] group-hover:scale-110"
+                              : "bg-white/10 text-[#86EFAC] group-hover:scale-110"
                             : !isDark
-                            ? "bg-amber-50 text-[#F59E0B] group-hover:bg-[#F59E0B] group-hover:text-white group-hover:scale-110"
+                            ? "bg-amber-50 text-[#C59B27] group-hover:bg-[#D4AF37] group-hover:text-[#1C3B1E] group-hover:scale-110"
                             : "bg-white/10 text-[#FBBF24] group-hover:scale-110"
                         }`}
                       >
@@ -407,7 +403,7 @@ export default function BioLinksBeach() {
                         <div className="flex items-center gap-2 flex-wrap">
                           <span
                             className={`text-[14px] sm:text-[15px] font-bold transition-colors leading-tight ${
-                              !isDark ? "text-[#0A2540] group-hover:text-[#0D9488]" : "text-white group-hover:text-[#2DD4BF]"
+                              !isDark ? "text-[#1C3B1E] group-hover:text-[#C59B27]" : "text-white group-hover:text-[#FBBF24]"
                             }`}
                           >
                             {link.name}
@@ -415,12 +411,10 @@ export default function BioLinksBeach() {
 
                           {/* Badge de Destaque */}
                           <span
-                            className={`text-[9.5px] font-extrabold uppercase px-2 py-0.5 rounded-full shrink-0 ${
-                              link.badgeColor === "coral"
-                                ? "bg-orange-100 text-[#EA580C] dark:bg-orange-950/70 dark:text-orange-300"
-                                : link.badgeColor === "turquoise"
-                                ? "bg-teal-100 text-[#0F766E] dark:bg-teal-950/70 dark:text-teal-300"
-                                : "bg-amber-100 text-[#B45309] dark:bg-amber-950/70 dark:text-amber-300"
+                            className={`text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full shrink-0 ${
+                              link.badgeColor === "moss"
+                                ? "bg-[#234E2A]/10 text-[#1C3B1E] border border-[#234E2A]/20 dark:bg-[#234E2A]/40 dark:text-[#86EFAC]"
+                                : "bg-amber-100 text-[#92400E] border border-[#D4AF37]/30 dark:bg-amber-950/70 dark:text-amber-300"
                             }`}
                           >
                             {link.badge}
@@ -429,7 +423,7 @@ export default function BioLinksBeach() {
 
                         <p
                           className={`text-[11.5px] sm:text-[12.5px] font-medium truncate mt-0.5 transition-colors ${
-                            !isDark ? "text-slate-500 group-hover:text-slate-700" : "text-slate-400 group-hover:text-slate-300"
+                            !isDark ? "text-slate-600 group-hover:text-slate-800" : "text-slate-400 group-hover:text-slate-300"
                           }`}
                         >
                           {link.actionText}
@@ -440,7 +434,7 @@ export default function BioLinksBeach() {
                     {/* Seta Chevron com Micro-Animação */}
                     <div
                       className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 ml-2 transition-transform duration-300 group-hover:translate-x-1 ${
-                        !isDark ? "text-slate-400 group-hover:text-[#0D9488]" : "text-slate-500 group-hover:text-[#2DD4BF]"
+                        !isDark ? "text-slate-400 group-hover:text-[#C59B27]" : "text-slate-500 group-hover:text-[#FBBF24]"
                       }`}
                     >
                       <ChevronRight size={18} />
@@ -455,7 +449,7 @@ export default function BioLinksBeach() {
               3. FOOTER INSTITUCIONAL COMPACTO
              ========================================================================= */}
           <footer className="pt-4 pb-2 mt-4 border-t text-center space-y-1 shrink-0 select-none border-slate-200/70 dark:border-white/10">
-            <p className="text-[11px] font-bold text-[#0D9488] dark:text-[#2DD4BF] uppercase tracking-wider">
+            <p className="text-[11px] font-bold text-[#234E2A] dark:text-[#FBBF24] uppercase tracking-wider">
               {brand.title} • {brand.locationFull}
             </p>
             <p className={`text-[10px] font-medium ${!isDark ? "text-slate-500" : "text-slate-400"}`}>
