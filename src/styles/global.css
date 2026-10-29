@@ -1,0 +1,56 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --color-sand: #F7F3EA;
+  --color-turquoise: #0D9488;
+  --color-coral: #F97316;
+  --color-ocean: #0A2540;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(13, 148, 136, 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(13, 148, 136, 0.45);
+}
+
+/* Glassmorphism & Coastal Grain */
+.beach-glass {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.beach-shadow {
+  box-shadow: 0 16px 40px -10px rgba(13, 148, 136, 0.12), 0 8px 18px -6px rgba(10, 37, 64, 0.08);
+}
+
+.beach-shadow-dark {
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.75), 0 0 25px -4px rgba(45, 212, 191, 0.15);
+}
