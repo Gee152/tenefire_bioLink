@@ -627,10 +627,6 @@ export default function BioLinksBeach() {
                       )}
                     </div>
                   </div>
-
-                  <span className="text-[9.5px] text-teal-800 dark:text-teal-200 font-extrabold uppercase bg-teal-100 dark:bg-teal-900/60 px-3 py-1 rounded-full border border-teal-200 dark:border-teal-700/50">
-                    Stock en Canarias
-                  </span>
                 </div>
 
                 {/* Botão de Pedido / Informação no WhatsApp Contextualizado */}
