@@ -261,12 +261,21 @@ export default function BioLinksBeach() {
             fetchPriority="high"
           />
 
+          {/* Camada de Blur Suave Progressivo entre a Imagem e o Texto */}
+          <div
+            className="absolute inset-x-0 bottom-0 h-72 sm:h-80 pointer-events-none backdrop-blur-[6px]"
+            style={{
+              WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.95) 50%, rgba(0,0,0,0) 100%)",
+              maskImage: "linear-gradient(to top, rgba(0,0,0,1) 0%, rgba(0,0,0,0.95) 50%, rgba(0,0,0,0) 100%)"
+            }}
+          />
+
           {/* Gradiente Inferior de Transição em Fade Suave */}
           <div
-            className={`absolute inset-x-0 bottom-0 h-56 sm:h-64 pointer-events-none ${
+            className={`absolute inset-x-0 bottom-0 h-60 sm:h-72 pointer-events-none ${
               !isDark
-                ? "bg-gradient-to-t from-[#FFFDF9] via-[#FFFDF9]/95 via-40% to-transparent"
-                : "bg-gradient-to-t from-[#0F1622] via-[#0F1622]/95 via-40% to-transparent"
+                ? "bg-gradient-to-t from-[#FFFDF9] via-[#FFFDF9]/90 via-45% to-transparent"
+                : "bg-gradient-to-t from-[#0F1622] via-[#0F1622]/90 via-45% to-transparent"
             }`}
           />
         </div>
@@ -276,8 +285,14 @@ export default function BioLinksBeach() {
            ========================================================================= */}
         <div className="relative z-10 px-4 sm:px-6 -mt-[300px] sm:-mt-[330px] pb-4 sm:pb-6 flex-1 flex flex-col justify-between">
           <div className="space-y-3 sm:space-y-4 my-auto">
-            {/* Bloco de Marca: Logo e Selo Oficial */}
-            <div className="text-center space-y-2 pointer-events-auto">
+            {/* Bloco de Marca: Logo e Selo Oficial com Suave Blur Translúcido */}
+            <div
+              className={`text-center space-y-2 pointer-events-auto p-3.5 sm:p-4 rounded-3xl backdrop-blur-md transition-all ${
+                !isDark
+                  ? "bg-white/50 border border-white/70 shadow-[0_8px_32px_rgba(255,255,255,0.45)]"
+                  : "bg-black/45 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.55)]"
+              }`}
+            >
               <LogoTenerifeBeach isDark={isDark} />
 
               <p
