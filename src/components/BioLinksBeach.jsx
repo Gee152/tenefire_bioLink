@@ -569,37 +569,20 @@ export default function BioLinksBeach() {
                 >
                   <ChevronRight size={18} />
                 </button>
-
-                {/* Badge Topo Esquerdo */}
-                <div className="absolute top-2.5 left-2.5">
-                  <span className="bg-[#0A2540]/90 backdrop-blur-sm text-[#2DD4BF] text-[9.5px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-sm border border-[#2DD4BF]/30">
-                    {currentProduct.subType}
-                  </span>
-                </div>
-
-                {/* Badge Topo Direito: Destaque */}
-                <div className="absolute top-2.5 right-2.5">
-                  <span className="bg-[#F97316] text-white text-[9.5px] font-black px-2.5 py-0.5 rounded-full uppercase shadow-md flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
-                    {currentProduct.highlightBadge}
-                  </span>
-                </div>
-
-                {/* Faixa Inferior de Proteção UV */}
-                <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1 text-[10.5px] font-bold text-white bg-black/60 backdrop-blur-md px-2.5 py-0.5 rounded-full">
-                    <ShieldCheck size={11} className="text-[#2DD4BF]" />
-                    <span>UV50+ Solar Pro</span>
-                  </span>
-                  <span className="text-[10.5px] font-semibold text-white/95 bg-black/55 backdrop-blur-md px-2.5 py-0.5 rounded-full">
-                    Lycra Premium Brasileña
-                  </span>
-                </div>
               </div>
 
               {/* Informações Textuais */}
               <div className="space-y-2.5">
                 <div>
+                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-[#234E2A]/10 text-[#1C3B1E] border border-[#234E2A]/20 dark:bg-[#234E2A]/30 dark:text-[#86EFAC]">
+                      {currentProduct.subType}
+                    </span>
+                    <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-amber-100 text-[#92400E] border border-[#D4AF37]/30 dark:bg-amber-950/70 dark:text-amber-300">
+                      {currentProduct.highlightBadge}
+                    </span>
+                  </div>
+
                   <h4 className={`text-lg font-black leading-snug ${!isDark ? "text-[#0A2540]" : "text-white"}`}>
                     {currentProduct.name}
                   </h4>
