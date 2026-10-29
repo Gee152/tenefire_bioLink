@@ -8,15 +8,14 @@ import {
   MapPin,
   Sun,
   Moon,
-  Home,
   X,
   ExternalLink,
-  Check,
   Sparkles,
   Ruler,
   Truck,
   ShieldCheck,
-  Coins
+  Heart,
+  Maximize2
 } from "lucide-react";
 import { TENERIFE_BEACH_DATA, getWhatsAppUrl } from "../data/beachData.js";
 import LogoTenerifeBeach from "./ui/LogoTenerifeBeach.jsx";
@@ -29,13 +28,19 @@ export default function BioLinksBeach() {
   const [theme, setTheme] = useState("light");
   const isDark = theme === "dark";
 
-  // Currency: EUR vs BRL
-  const [currency, setCurrency] = useState("EUR"); // "EUR" | "BRL"
+  // Currency (default official currency EUR)
+  const currency = "EUR";
 
   // Modals state
   const [isCatalogModalOpen, setIsCatalogModalOpen] = useState(false);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+
+  // Instagram interactions
+  const [likes, setLikes] = useState({});
+  const [bookmarks, setBookmarks] = useState({});
+  const [showHeartAnim, setShowHeartAnim] = useState(false);
+  const [isZoomFit, setIsZoomFit] = useState(false);
 
   // Toast notification for clipboard copy
   const [toastMessage, setToastMessage] = useState("");
@@ -123,12 +128,60 @@ export default function BioLinksBeach() {
 
   const currentProduct = products[activeSlide] || products[0];
 
+  const isCurrentLiked = Boolean(likes[currentProduct?.id]);
+  const isCurrentBookmarked = Boolean(bookmarks[currentProduct?.id]);
+  const baseLikes = ((activeSlide * 19 + 73) % 180) + 94;
+  const likesCount = baseLikes + (isCurrentLiked ? 1 : 0);
+
+  const handleToggleLike = () => {
+    setLikes((prev) => ({
+      ...prev,
+      [currentProduct.id]: !prev[currentProduct.id],
+    }));
+    if (!isCurrentLiked) {
+      showToast(`¡Añadido a tus favoritos! ❤️`);
+    }
+  };
+
+  const handleDoubleTapLike = () => {
+    if (!isCurrentLiked) {
+      setLikes((prev) => ({ ...prev, [currentProduct.id]: true }));
+    }
+    setShowHeartAnim(true);
+    setTimeout(() => setShowHeartAnim(false), 900);
+  };
+
+  const handleToggleBookmark = () => {
+    setBookmarks((prev) => ({
+      ...prev,
+      [currentProduct.id]: !prev[currentProduct.id],
+    }));
+    showToast(!isCurrentBookmarked ? "¡Pieza guardada en tu lista! 🔖" : "Pieza eliminada de guardados");
+  };
+
+  const handleShareProduct = async () => {
+    const text = `Mira esta pieza de Tenerife Beach: ${currentProduct.name} (${currentProduct.priceEur})`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: currentProduct.name,
+          text,
+          url: window.location.href,
+        });
+      } catch (e) {
+        console.log("Dismissed", e);
+      }
+    } else {
+      navigator.clipboard.writeText(`${currentProduct.name} - ${window.location.href}`);
+      showToast("¡Enlace de la pieza copiado!");
+    }
+  };
+
   const primaryLinks = [
     {
       id: "whatsapp-vip",
       name: "Atendimento VIP WhatsApp",
       actionText: "Falar com uma consultora de estilo agora",
-      badge: "Mais Rápido",
       badgeColor: "gold",
       icon: WhatsAppIcon,
       isExternal: true,
@@ -137,8 +190,7 @@ export default function BioLinksBeach() {
     {
       id: "catalogo-interativo",
       name: "Coleção & Catálogo 2026",
-      actionText: "Ver Kits Família, Biquínis & Peças Modeladoras",
-      badge: "Catálogo",
+      actionText: "Ver 11 modelos exclusivos (Biquínis, Maiôs & Kits)",
       badgeColor: "moss",
       icon: ShoppingBag,
       onClick: () => setIsCatalogModalOpen(true),
@@ -147,7 +199,6 @@ export default function BioLinksBeach() {
       id: "guia-tamanhos",
       name: "Guia de Tamanhos (Brasil ⇄ Espanha)",
       actionText: "Descubra sua numeração exata (P, M, G vs 36 a 44)",
-      badge: "Tabela Oficial",
       badgeColor: "gold",
       icon: Ruler,
       onClick: () => setIsSizeGuideOpen(true),
@@ -155,12 +206,11 @@ export default function BioLinksBeach() {
     {
       id: "envios-tenerife",
       name: "Envíos & Retirada en Tienda",
-      actionText: "Envíos en 24/72h a Canarias y punto en Tenerife Sur",
-      badge: "Islas Canarias",
+      actionText: "Envíos en 24/72h o recogida en Calle Los Calados, 1",
       badgeColor: "moss",
       icon: Truck,
       isExternal: true,
-      href: getWhatsAppUrl("¡Hola! Me gustaría saber cómo funcionan los envíos a mi isla o la recogida presencial en Tenerife."),
+      href: getWhatsAppUrl("¡Hola! Me gustaría saber cómo funcionan los envíos a mi isla o la recogida presencial en Calle Los Calados, 1 (CP 38111)."),
     }
   ];
 
@@ -187,41 +237,10 @@ export default function BioLinksBeach() {
         }`}
       >
         {/* =========================================================================
-            BARRA FLUTUANTE SUPERIOR (Ações: Home, Moeda, Tema, Compartilhar)
+            BARRA FLUTUANTE SUPERIOR (Ações: Tema, Compartilhar)
            ========================================================================= */}
-        <div className="absolute top-4 inset-x-4 z-30 flex items-center justify-between pointer-events-auto">
-          {/* Voltar ao início / Recarregar */}
-          <a
-            href="/"
-            title="Tenerife Beach"
-            className={`p-2.5 rounded-full beach-glass transition-all shadow-md active:scale-95 flex items-center justify-center ${
-              !isDark
-                ? "bg-white/90 hover:bg-white text-[#0A2540] border border-[#0D9488]/20 hover:text-[#0D9488]"
-                : "bg-white/10 hover:bg-white/20 text-white border border-white/15"
-            }`}
-          >
-            <Home size={16} />
-          </a>
-
+        <div className="absolute top-4 inset-x-4 z-30 flex items-center justify-end pointer-events-auto">
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Seletor de Moeda (€ EUR vs R$ BRL) */}
-            <button
-              onClick={() => {
-                const nextCurrency = currency === "EUR" ? "BRL" : "EUR";
-                setCurrency(nextCurrency);
-                showToast(`Moeda alterada para ${nextCurrency}`);
-              }}
-              className={`px-2.5 py-1.5 rounded-full beach-glass transition-all shadow-md active:scale-95 flex items-center gap-1 text-[11px] font-extrabold cursor-pointer ${
-                !isDark
-                  ? "bg-white/90 hover:bg-white text-[#0D9488] border border-[#0D9488]/25"
-                  : "bg-white/10 hover:bg-white/20 text-[#2DD4BF] border border-white/15"
-              }`}
-              title="Alternar entre Euro (€) e Real (R$)"
-            >
-              <Coins size={13} />
-              <span>{currency}</span>
-            </button>
-
             {/* Alternador de Tema (Light Dunas vs Dark Vulcão) */}
             <button
               onClick={() => setTheme(isDark ? "light" : "dark")}
@@ -258,17 +277,9 @@ export default function BioLinksBeach() {
             src={brand.heroPhoto}
             alt={brand.heroAlt}
             className="w-full h-full object-cover object-[center_20%] scale-105 transition-transform duration-700 hover:scale-110"
-            fetchPriority="high"
+            fetchpriority="high"
           />
 
-          {/* Camada de Blur Suave que preenche o enquadramento do quadrado com alta transparência */}
-          <div
-            className={`absolute inset-x-0 top-14 sm:top-16 bottom-0 backdrop-blur-[8px] transition-all pointer-events-none ${
-              !isDark
-                ? "bg-white/20 border-t border-white/30"
-                : "bg-black/30 border-t border-white/10"
-            }`}
-          />
 
           {/* Gradiente Inferior de Transição em Fade Suave */}
           <div
@@ -409,26 +420,13 @@ export default function BioLinksBeach() {
 
                       {/* Textos */}
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span
-                            className={`text-[14px] sm:text-[15px] font-bold transition-colors leading-tight ${
-                              !isDark ? "text-[#1C3B1E] group-hover:text-[#C59B27]" : "text-white group-hover:text-[#FBBF24]"
-                            }`}
-                          >
-                            {link.name}
-                          </span>
-
-                          {/* Badge de Destaque */}
-                          <span
-                            className={`text-[9.5px] font-black uppercase px-2 py-0.5 rounded-full shrink-0 ${
-                              link.badgeColor === "moss"
-                                ? "bg-[#234E2A]/10 text-[#1C3B1E] border border-[#234E2A]/20 dark:bg-[#234E2A]/40 dark:text-[#86EFAC]"
-                                : "bg-amber-100 text-[#92400E] border border-[#D4AF37]/30 dark:bg-amber-950/70 dark:text-amber-300"
-                            }`}
-                          >
-                            {link.badge}
-                          </span>
-                        </div>
+                        <span
+                          className={`text-[14px] sm:text-[15px] font-bold transition-colors leading-tight block ${
+                            !isDark ? "text-[#1C3B1E] group-hover:text-[#C59B27]" : "text-white group-hover:text-[#FBBF24]"
+                          }`}
+                        >
+                          {link.name}
+                        </span>
 
                         <p
                           className={`text-[11.5px] sm:text-[12.5px] font-medium truncate mt-0.5 transition-colors ${
@@ -485,158 +483,173 @@ export default function BioLinksBeach() {
           }}
         >
           <div
-            className={`relative w-full max-w-md my-auto rounded-[32px] overflow-hidden shadow-2xl border flex flex-col max-h-[92vh] transition-all duration-300 ${
+            className={`relative w-full max-w-lg my-auto rounded-[32px] overflow-hidden shadow-2xl border flex flex-col max-h-[92vh] transition-all duration-300 ${
               !isDark ? "bg-[#FFFDF9] border-[#0D9488]/20 text-[#0A2540]" : "bg-[#0F1622] border-white/15 text-white"
             }`}
           >
-            {/* Header do Modal */}
+            {/* Corpo do Modal: Slide do Produto (Imagem posicionada no topo) */}
             <div
-              className={`p-4 border-b flex items-center justify-between shrink-0 ${
-                !isDark ? "border-slate-100 bg-[#F7F3EA]" : "border-white/10 bg-[#162032]"
-              }`}
-            >
-              <div className="space-y-0.5">
-                <div className="inline-flex items-center gap-1.5 text-[#0D9488] dark:text-[#2DD4BF] text-[10px] font-black uppercase tracking-wider">
-                  <Sparkles size={11} className="shrink-0" />
-                  <span>COLECCIÓN BRASILEÑA 2026</span>
-                </div>
-                <h3 className={`text-base sm:text-lg font-black leading-tight ${!isDark ? "text-[#0A2540]" : "text-white"}`}>
-                  Catálogo & Peças em Destaque
-                </h3>
-                <p className={`text-[11px] font-medium leading-none ${!isDark ? "text-slate-500" : "text-slate-400"}`}>
-                  Pieza {activeSlide + 1} de {products.length} • Desliza para explorar
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setIsCatalogModalOpen(false)}
-                aria-label="Cerrar catálogo"
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer ${
-                  !isDark
-                    ? "bg-white hover:bg-slate-200 text-slate-700 shadow-sm border border-slate-200"
-                    : "bg-white/10 hover:bg-white/20 text-white border border-white/15"
-                }`}
-              >
-                <X size={18} />
-              </button>
-            </div>
-
-            {/* Corpo do Modal: Slide do Produto */}
-            <div
-              className="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1"
+              className="p-3 sm:p-4 overflow-y-auto space-y-3 flex-1"
               onTouchStart={onTouchStart}
               onTouchMove={onTouchMove}
               onTouchEnd={onTouchEnd}
             >
-              {/* Foto com Setas e Badges */}
-              <div className="relative rounded-2xl overflow-hidden h-52 sm:h-56 bg-slate-100 shadow-sm group select-none">
-                <img
-                  src={currentProduct.image}
-                  alt={currentProduct.name}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-
-                {/* Seta Esquerda */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePrevSlide();
-                  }}
-                  aria-label="Pieza anterior"
-                  className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md active:scale-90 cursor-pointer border border-white/20"
+              {/* =========================================================================
+                  POST VISUAL ESTILO INSTAGRAM (FOTO NO TOPO + INTERAÇÕES SOCIAIS)
+                 ========================================================================= */}
+              <div className="space-y-2">
+                {/* Container da Foto em Tamanho Extra Ampliado (Aspect Ratio 9:13) */}
+                <div
+                  className="relative aspect-[9/13] w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 shadow-xl group select-none cursor-pointer border border-black/5 dark:border-white/10"
+                  onDoubleClick={handleDoubleTapLike}
                 >
-                  <ChevronLeft size={18} />
-                </button>
+                  {/* Botão Fechar (X) Flutuante sobre a Imagem */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsCatalogModalOpen(false);
+                    }}
+                    aria-label="Cerrar catálogo"
+                    className="absolute top-3 right-3 z-30 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-lg active:scale-90 cursor-pointer border border-white/20"
+                  >
+                    <X size={18} />
+                  </button>
 
-                {/* Seta Direita */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNextSlide();
-                  }}
-                  aria-label="Siguiente pieza"
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-sm transition-all shadow-md active:scale-90 cursor-pointer border border-white/20"
-                >
-                  <ChevronRight size={18} />
-                </button>
+                  {/* Contador Pílula Flutuante sobre a Imagem (ex: 1 / 11) */}
+                  <div className="absolute top-3 left-3 z-30 pointer-events-none">
+                    <span className="text-[10.5px] font-extrabold px-2.5 py-1 rounded-full bg-black/60 text-white backdrop-blur-md tracking-wider border border-white/20 shadow-lg">
+                      {activeSlide + 1} / {products.length}
+                    </span>
+                  </div>
+                  {/* Fundo com Blur da Própria Imagem para Garantir Amplo Alcance Sem Barras Negras */}
+                  <img
+                    src={currentProduct.image}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125 pointer-events-none"
+                  />
+
+                  {/* Foto Principal com Enquadramento Perfeito da Peça */}
+                  <img
+                    src={currentProduct.image}
+                    alt={currentProduct.name}
+                    className={`relative z-10 w-full h-full ${
+                      isZoomFit ? "object-contain" : "object-cover object-[center_18%]"
+                    } transition-all duration-500 group-hover:scale-[1.02]`}
+                    loading="lazy"
+                  />
+
+                  {/* Efeito Visual de Coração Gigante Flutuante ao Dar Dois Toques */}
+                  {showHeartAnim && (
+                    <div className="absolute inset-0 z-40 flex items-center justify-center pointer-events-none">
+                      <div className="animate-ping duration-700">
+                        <Heart size={84} className="text-white fill-red-500 drop-shadow-[0_12px_30px_rgba(239,68,68,0.8)]" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Overlay de Informações (Badges, Título e Descrição) com Blur Preto Suave */}
+                  <div className="absolute inset-x-2.5 bottom-2.5 z-20 p-3 sm:p-3.5 rounded-2xl bg-black/20 backdrop-blur-md border border-white/15 text-white shadow-xl space-y-1.5 pointer-events-auto">
+                    {/* Linha Superior: Badges e Botão Maximize */}
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="bg-[#234E2A]/80 text-[#86EFAC] text-[9.5px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider border border-[#86EFAC]/30">
+                          {currentProduct.subType}
+                        </span>
+                        <span className="bg-[#D4AF37] text-[#1C3B1E] text-[9.5px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          {currentProduct.highlightBadge}
+                        </span>
+                      </div>
+
+                      {/* Botão de Alternar Enquadramento Inteiro/Cover */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsZoomFit(!isZoomFit);
+                        }}
+                        title={isZoomFit ? "Voltar ao Modo Editorial" : "Ajustar Foto Inteira"}
+                        className="p-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/20 active:scale-90 transition-all cursor-pointer shrink-0"
+                      >
+                        <Maximize2 size={12} />
+                      </button>
+                    </div>
+
+                    {/* Título da Peça */}
+                    <h4 className="text-[13.5px] sm:text-[14.5px] font-black text-white leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+                      {currentProduct.name}
+                    </h4>
+
+                    {/* Descrição com Blur Suave e Alta Legibilidade */}
+                    <p className="text-[11px] sm:text-[11.5px] text-white/95 leading-relaxed font-normal drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                      {currentProduct.description}
+                    </p>
+                  </div>
+
+                  {/* Seta Esquerda Flutuante */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrevSlide();
+                    }}
+                    aria-label="Pieza anterior"
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-black/55 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-90 cursor-pointer border border-white/20"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+
+                  {/* Seta Direita Flutuante */}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNextSlide();
+                    }}
+                    aria-label="Siguiente pieza"
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-black/55 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-90 cursor-pointer border border-white/20"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
               </div>
 
-              {/* Informações Textuais */}
-              <div className="space-y-2.5">
-                <div>
-                  <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                    <span className="text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-full bg-[#234E2A]/10 text-[#1C3B1E] border border-[#234E2A]/20 dark:bg-[#234E2A]/30 dark:text-[#86EFAC]">
-                      {currentProduct.subType}
+              {/* Preço e Botão de Pedido WhatsApp Lado a Lado com Distância de 10% */}
+              <div
+                className={`pt-2.5 mt-0.5 border-t flex items-center justify-between gap-[10%] ${
+                  !isDark ? "border-slate-100" : "border-white/10"
+                }`}
+              >
+                {/* Preço Oficial à Esquerda */}
+                <div className="shrink-0">
+                  <span className="text-[10px] text-slate-400 block leading-none font-medium">
+                    Precio Oficial
+                  </span>
+                  <div className="flex items-baseline gap-1.5 sm:gap-2 mt-0.5">
+                    <span className={`text-xl sm:text-2xl font-black font-display whitespace-nowrap ${!isDark ? "text-[#0A2540]" : "text-white"}`}>
+                      {currency === "EUR" ? currentProduct.priceEur : currentProduct.priceBrl}
                     </span>
-                    <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-amber-100 text-[#92400E] border border-[#D4AF37]/30 dark:bg-amber-950/70 dark:text-amber-300">
-                      {currentProduct.highlightBadge}
-                    </span>
-                  </div>
-
-                  <h4 className={`text-lg font-black leading-snug ${!isDark ? "text-[#0A2540]" : "text-white"}`}>
-                    {currentProduct.name}
-                  </h4>
-                  <p className={`text-xs mt-1 leading-relaxed ${!isDark ? "text-slate-600" : "text-slate-300"}`}>
-                    {currentProduct.description}
-                  </p>
-                </div>
-
-                {/* Diferenciais da Peça */}
-                <ul className="pt-1 space-y-1">
-                  {currentProduct.features.map((feature, idx) => (
-                    <li
-                      key={idx}
-                      className={`flex items-center gap-2 text-xs font-medium ${
-                        !isDark ? "text-slate-600" : "text-slate-300"
-                      }`}
-                    >
-                      <Check size={13} className="text-[#0D9488] dark:text-[#2DD4BF] shrink-0" />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                {/* Bloco de Preço com Moeda Dinâmica */}
-                <div
-                  className={`pt-2.5 mt-2.5 border-t flex items-center justify-between ${
-                    !isDark ? "border-slate-100" : "border-white/10"
-                  }`}
-                >
-                  <div>
-                    <span className="text-[10px] text-slate-400 block leading-none font-medium">
-                      Precio Oficial
-                    </span>
-                    <div className="flex items-baseline gap-2 mt-0.5">
-                      <span className={`text-xl font-black font-display ${!isDark ? "text-[#0A2540]" : "text-white"}`}>
-                        {currency === "EUR" ? currentProduct.priceEur : currentProduct.priceBrl}
+                    {currency === "EUR" && currentProduct.oldPriceEur && (
+                      <span className="text-xs text-slate-400 line-through whitespace-nowrap">
+                        {currentProduct.oldPriceEur}
                       </span>
-                      {currency === "EUR" && currentProduct.oldPriceEur && (
-                        <span className="text-xs text-slate-400 line-through">
-                          {currentProduct.oldPriceEur}
-                        </span>
-                      )}
-                    </div>
+                    )}
                   </div>
                 </div>
 
-                {/* Botão de Pedido / Informação no WhatsApp Contextualizado */}
-                <div className="pt-2">
-                  <a
-                    href={getWhatsAppUrl(currentProduct.whatsappMessage)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-extrabold text-xs sm:text-sm py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer"
-                    title={`Pedir información sobre ${currentProduct.name}`}
-                  >
-                    <WhatsAppIcon size={20} className="shrink-0 fill-current" />
-                    <span>Pedir por WhatsApp o Consultar Talla</span>
-                    <ExternalLink size={14} className="shrink-0 opacity-80" />
-                  </a>
-                </div>
+                {/* Botão de Pedido WhatsApp ao lado do Preço com 10% de distância */}
+                <a
+                  href={getWhatsAppUrl(currentProduct.whatsappMessage)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 min-w-0 bg-[#25D366] hover:bg-[#20ba59] text-white font-extrabold text-xs sm:text-sm py-3 px-3 sm:px-4 rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer"
+                  title={`Pedir información sobre ${currentProduct.name}`}
+                >
+                  <WhatsAppIcon size={18} className="shrink-0 fill-current" />
+                  <span className="truncate">Pedir por WhatsApp</span>
+                  <ExternalLink size={13} className="shrink-0 opacity-80 hidden xs:inline-block" />
+                </a>
               </div>
             </div>
 
@@ -647,7 +660,7 @@ export default function BioLinksBeach() {
               }`}
             >
               {/* Bolinhas Indicadoras do Slider */}
-              <div className="flex items-center justify-center gap-1.5 py-0.5">
+              <div className="flex items-center justify-center gap-1.5 py-0.5 flex-wrap max-w-full px-2">
                 {products.map((_, idx) => (
                   <button
                     key={idx}
