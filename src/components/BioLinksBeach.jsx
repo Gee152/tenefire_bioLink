@@ -180,8 +180,8 @@ export default function BioLinksBeach() {
   const primaryLinks = [
     {
       id: "whatsapp-vip",
-      name: "Atendimento VIP WhatsApp",
-      actionText: "Falar com uma consultora de estilo agora",
+      name: "Atención VIP WhatsApp",
+      actionText: "Hablar con una asesora de estilo ahora",
       badgeColor: "gold",
       icon: WhatsAppIcon,
       isExternal: true,
@@ -189,16 +189,16 @@ export default function BioLinksBeach() {
     },
     {
       id: "catalogo-interativo",
-      name: "Coleção & Catálogo 2026",
-      actionText: "Ver 11 modelos exclusivos (Biquínis, Maiôs & Kits)",
+      name: "Colección & Catálogo 2026",
+      actionText: "Ver 11 modelos exclusivos (Bikinis, Bañadores y Packs)",
       badgeColor: "moss",
       icon: ShoppingBag,
       onClick: () => setIsCatalogModalOpen(true),
     },
     {
       id: "guia-tamanhos",
-      name: "Guia de Tamanhos (Brasil ⇄ Espanha)",
-      actionText: "Descubra sua numeração exata (P, M, G vs 36 a 44)",
+      name: "Guía de Tallas (Brasil ⇄ España)",
+      actionText: "Descubre tu talla exacta (P, M, G vs 34 a 46)",
       badgeColor: "gold",
       icon: Ruler,
       onClick: () => setIsSizeGuideOpen(true),
@@ -249,7 +249,7 @@ export default function BioLinksBeach() {
                   ? "bg-white/90 hover:bg-white text-[#0A2540] border border-[#0D9488]/20 hover:text-[#0D9488]"
                   : "bg-white/10 hover:bg-white/20 text-amber-300 border border-white/15"
               }`}
-              title={!isDark ? "Mudar para Modo Noite Vulcânica" : "Mudar para Modo Praia Dourada"}
+              title={!isDark ? "Cambiar a Modo Noche Volcánica" : "Cambiar a Modo Playa Dorada"}
             >
               {!isDark ? <Moon size={16} /> : <Sun size={16} />}
             </button>
@@ -262,7 +262,7 @@ export default function BioLinksBeach() {
                   ? "bg-white/90 hover:bg-white text-[#0A2540] border border-[#0D9488]/20 hover:text-[#0D9488]"
                   : "bg-white/10 hover:bg-white/20 text-white border border-white/15"
               }`}
-              title="Compartilhar Perfil"
+              title="Compartir Perfil"
             >
               <Share2 size={16} />
             </button>
@@ -345,8 +345,8 @@ export default function BioLinksBeach() {
                   href={getWhatsAppUrl("¡Hola Tenerife Beach! Vi su perfil de Instagram y me gustaría ver modelos y precios disponibles.")}
                   target="_blank"
                   rel="noreferrer"
-                  title="Atendimento no WhatsApp Oficial"
-                  aria-label="Atendimento no WhatsApp Oficial"
+                  title="Atención en WhatsApp Oficial"
+                  aria-label="Atención en WhatsApp Oficial"
                   className={`w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center transition-all duration-300 group cursor-pointer shrink-0 relative ${
                     !isDark
                       ? "bg-white border-2 border-[#25D366] shadow-[0_6px_20px_rgba(37,211,102,0.3)] text-[#25D366] hover:bg-[#25D366] hover:text-white hover:scale-105 active:scale-95"
@@ -569,7 +569,7 @@ export default function BioLinksBeach() {
                           e.stopPropagation();
                           setIsZoomFit(!isZoomFit);
                         }}
-                        title={isZoomFit ? "Voltar ao Modo Editorial" : "Ajustar Foto Inteira"}
+                        title={isZoomFit ? "Volver al Modo Editorial" : "Ajustar Foto Completa"}
                         className="p-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/20 active:scale-90 transition-all cursor-pointer shrink-0"
                       >
                         <Maximize2 size={12} />
@@ -723,7 +723,7 @@ export default function BioLinksBeach() {
               <div className="space-y-0.5">
                 <div className="inline-flex items-center gap-1.5 text-[#F97316] text-[10px] font-black uppercase tracking-wider">
                   <Ruler size={11} className="shrink-0" />
-                  <span>TABELA DE EQUIVALÊNCIA OFICIAL</span>
+                  <span>TABLA DE EQUIVALENCIAS OFICIAL</span>
                 </div>
                 <h3 className={`text-base sm:text-lg font-black leading-tight ${!isDark ? "text-[#0A2540]" : "text-white"}`}>
                   Guía de Tallas (Brasil ⇄ España)
@@ -750,7 +750,7 @@ export default function BioLinksBeach() {
             {/* Conteúdo da Tabela */}
             <div className="p-4 sm:p-5 overflow-y-auto space-y-4">
               <p className={`text-xs leading-relaxed ${!isDark ? "text-slate-600" : "text-slate-300"}`}>
-                Los biquinis brasileños se caracterizan por una modelación anatómica que se adapta al cuerpo. Consulta la siguiente tabla de equivalencia entre España y Brasil:
+                Los bikinis brasileños se caracterizan por un patronaje anatómico que se adapta al cuerpo. Consulta la siguiente tabla de equivalencia entre España y Brasil:
               </p>
 
               <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-sm">
@@ -789,13 +789,13 @@ export default function BioLinksBeach() {
 
               <div className="p-3 rounded-xl bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800/40">
                 <p className="text-[11.5px] text-orange-900 dark:text-orange-200 font-medium leading-relaxed">
-                  💡 <strong>Tip de la Asesora:</strong> Si estás entre dos tallas, para el corte cortininha clásico elige tu talla habitual si te gusta el estilo brasileño, o una talla más si prefieres mayor cobertura.
+                  💡 <strong>Tip de la Asesora:</strong> Si estás entre dos tallas, para el corte cortinilla clásico elige tu talla habitual si te gusta el estilo brasileño, o una talla más si prefieres mayor cobertura.
                 </p>
               </div>
 
               {/* Botão de Ajuda Direta */}
               <a
-                href={getWhatsAppUrl("¡Hola! Tengo dudas sobre mi talla para un biquíni/maiô de Tenerife Beach y me gustaría recibir asesoramiento.")}
+                href={getWhatsAppUrl("¡Hola! Tengo dudas sobre mi talla para un bikini o bañador de Tenerife Beach y me gustaría recibir asesoramiento.")}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-extrabold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg active:scale-[0.98] cursor-pointer"
