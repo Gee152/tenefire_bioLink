@@ -22,7 +22,7 @@ import LogoTenerifeBeach from "./ui/LogoTenerifeBeach.jsx";
 import WhatsAppIcon from "./ui/WhatsAppIcon.jsx";
 
 export default function BioLinksBeach() {
-  const { brand, products, sizeGuide } = TENERIFE_BEACH_DATA;
+  const { brand, products, collection2027 = [], sizeGuide } = TENERIFE_BEACH_DATA;
 
   // Theme: light (Golden Dunes & Turquoise) vs dark (Volcanic Night & Aqua)
   const [theme, setTheme] = useState("light");
@@ -31,10 +31,13 @@ export default function BioLinksBeach() {
   // Currency (default official currency EUR)
   const currency = "EUR";
 
-  // Modals state
-  const [isCatalogModalOpen, setIsCatalogModalOpen] = useState(false);
+  // Modals state: null | '2026' | '2027'
+  const [activeCatalogType, setActiveCatalogType] = useState(null);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+
+  const isCatalogModalOpen = Boolean(activeCatalogType);
+  const currentCatalogProducts = activeCatalogType === "2027" ? collection2027 : products;
 
   // Instagram interactions
   const [likes, setLikes] = useState({});
@@ -51,11 +54,11 @@ export default function BioLinksBeach() {
   const minSwipeDistance = 45;
 
   const handlePrevSlide = () => {
-    setActiveSlide((prev) => (prev === 0 ? products.length - 1 : prev - 1));
+    setActiveSlide((prev) => (prev === 0 ? currentCatalogProducts.length - 1 : prev - 1));
   };
 
   const handleNextSlide = () => {
-    setActiveSlide((prev) => (prev === products.length - 1 ? 0 : prev + 1));
+    setActiveSlide((prev) => (prev === currentCatalogProducts.length - 1 ? 0 : prev + 1));
   };
 
   const onTouchStart = (e) => {
@@ -83,7 +86,7 @@ export default function BioLinksBeach() {
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
-        setIsCatalogModalOpen(false);
+        setActiveCatalogType(null);
         setIsSizeGuideOpen(false);
       } else if (isCatalogModalOpen) {
         if (e.key === "ArrowLeft") handlePrevSlide();
@@ -102,7 +105,7 @@ export default function BioLinksBeach() {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isCatalogModalOpen, isSizeGuideOpen]);
+  }, [isCatalogModalOpen, isSizeGuideOpen, currentCatalogProducts.length]);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -126,7 +129,7 @@ export default function BioLinksBeach() {
     }
   };
 
-  const currentProduct = products[activeSlide] || products[0];
+  const currentProduct = currentCatalogProducts[activeSlide] || currentCatalogProducts[0] || products[0];
 
   const isCurrentLiked = Boolean(likes[currentProduct?.id]);
   const isCurrentBookmarked = Boolean(bookmarks[currentProduct?.id]);
@@ -193,7 +196,21 @@ export default function BioLinksBeach() {
       actionText: "Ver 11 modelos exclusivos (Bikinis, Bañadores y Packs)",
       badgeColor: "moss",
       icon: ShoppingBag,
-      onClick: () => setIsCatalogModalOpen(true),
+      onClick: () => {
+        setActiveCatalogType("2026");
+        setActiveSlide(0);
+      },
+    },
+    {
+      id: "catalogo-2027",
+      name: "Colección Catálogo 2027",
+      actionText: "Mis modelos trajes festival artesanal (€ 248,90)",
+      badgeColor: "moss",
+      icon: ShoppingBag,
+      onClick: () => {
+        setActiveCatalogType("2027");
+        setActiveSlide(0);
+      },
     },
     {
       id: "guia-tamanhos",
@@ -476,10 +493,10 @@ export default function BioLinksBeach() {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Catálogo Tenerife Beach"
+          aria-label={activeCatalogType === "2027" ? "Colección Catálogo 2027 - Trajes Festival Artesanal" : "Catálogo Tenerife Beach 2026"}
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md overflow-y-auto select-none"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setIsCatalogModalOpen(false);
+            if (e.target === e.currentTarget) setActiveCatalogType(null);
           }}
         >
           <div
@@ -508,7 +525,7 @@ export default function BioLinksBeach() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setIsCatalogModalOpen(false);
+                      setActiveCatalogType(null);
                     }}
                     aria-label="Cerrar catálogo"
                     className="absolute top-3 right-3 z-30 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-lg active:scale-90 cursor-pointer border border-white/20"
@@ -516,10 +533,12 @@ export default function BioLinksBeach() {
                     <X size={18} />
                   </button>
 
-                  {/* Contador Pílula Flutuante sobre a Imagem (ex: 1 / 11) */}
-                  <div className="absolute top-3 left-3 z-30 pointer-events-none">
+                  {/* Contador Pílula Flutuante sobre a Imagem */}
+                  <div className="absolute top-3 left-3 z-30 pointer-events-none flex items-center gap-1.5">
                     <span className="text-[10.5px] font-extrabold px-2.5 py-1 rounded-full bg-black/60 text-white backdrop-blur-md tracking-wider border border-white/20 shadow-lg">
-                      {activeSlide + 1} / {products.length}
+                      {activeCatalogType === "2027"
+                        ? `Catálogo 2027 • ${activeSlide + 1} / ${currentCatalogProducts.length}`
+                        : `${activeSlide + 1} / ${currentCatalogProducts.length}`}
                     </span>
                   </div>
                   {/* Fundo com Blur da Própria Imagem para Garantir Amplo Alcance Sem Barras Negras */}
@@ -551,16 +570,11 @@ export default function BioLinksBeach() {
 
                   {/* Overlay de Informações (Badges, Título e Descrição) com Blur Preto Suave */}
                   <div className="absolute inset-x-2.5 bottom-2.5 z-20 p-3 sm:p-3.5 rounded-2xl bg-black/20 backdrop-blur-md border border-white/15 text-white shadow-xl space-y-1.5 pointer-events-auto">
-                    {/* Linha Superior: Badges e Botão Maximize */}
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="bg-[#234E2A]/80 text-[#86EFAC] text-[9.5px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider border border-[#86EFAC]/30">
-                          {currentProduct.subType}
-                        </span>
-                        <span className="bg-[#D4AF37] text-[#1C3B1E] text-[9.5px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
-                          {currentProduct.highlightBadge}
-                        </span>
-                      </div>
+                    {/* Linha Superior: Título da Peça e Botão Maximize */}
+                    <div className="flex items-start justify-between gap-2">
+                      <h4 className="text-[13.5px] sm:text-[14.5px] font-black text-white leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] flex-1">
+                        {currentProduct.name}
+                      </h4>
 
                       {/* Botão de Alternar Enquadramento Inteiro/Cover */}
                       <button
@@ -576,11 +590,6 @@ export default function BioLinksBeach() {
                       </button>
                     </div>
 
-                    {/* Título da Peça */}
-                    <h4 className="text-[13.5px] sm:text-[14.5px] font-black text-white leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
-                      {currentProduct.name}
-                    </h4>
-
                     {/* Descrição com Blur Suave e Alta Legibilidade */}
                     <p className="text-[11px] sm:text-[11.5px] text-white/95 leading-relaxed font-normal drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
                       {currentProduct.description}
@@ -588,30 +597,34 @@ export default function BioLinksBeach() {
                   </div>
 
                   {/* Seta Esquerda Flutuante */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrevSlide();
-                    }}
-                    aria-label="Pieza anterior"
-                    className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-black/55 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-90 cursor-pointer border border-white/20"
-                  >
-                    <ChevronLeft size={20} />
-                  </button>
+                  {currentCatalogProducts.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePrevSlide();
+                      }}
+                      aria-label="Pieza anterior"
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-black/55 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-90 cursor-pointer border border-white/20"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+                  )}
 
                   {/* Seta Direita Flutuante */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNextSlide();
-                    }}
-                    aria-label="Siguiente pieza"
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-black/55 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-90 cursor-pointer border border-white/20"
-                  >
-                    <ChevronRight size={20} />
-                  </button>
+                  {currentCatalogProducts.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNextSlide();
+                      }}
+                      aria-label="Siguiente pieza"
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-black/55 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-md active:scale-90 cursor-pointer border border-white/20"
+                    >
+                      <ChevronRight size={20} />
+                    </button>
+                  )}
                 </div>
               </div>
 
@@ -660,28 +673,36 @@ export default function BioLinksBeach() {
               }`}
             >
               {/* Bolinhas Indicadoras do Slider */}
-              <div className="flex items-center justify-center gap-1.5 py-0.5 flex-wrap max-w-full px-2">
-                {products.map((_, idx) => (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => setActiveSlide(idx)}
-                    aria-label={`Ir a pieza ${idx + 1}`}
-                    className={`transition-all rounded-full cursor-pointer ${
-                      activeSlide === idx
-                        ? "w-6 h-2 bg-[#0D9488] dark:bg-[#2DD4BF]"
-                        : !isDark
-                        ? "w-2 h-2 bg-slate-300 hover:bg-slate-400"
-                        : "w-2 h-2 bg-white/30 hover:bg-white/50"
-                    }`}
-                  />
-                ))}
-              </div>
+              {currentCatalogProducts.length > 1 ? (
+                <div className="flex items-center justify-center gap-1.5 py-0.5 flex-wrap max-w-full px-2">
+                  {currentCatalogProducts.map((_, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveSlide(idx)}
+                      aria-label={`Ir a pieza ${idx + 1}`}
+                      className={`transition-all rounded-full cursor-pointer ${
+                        activeSlide === idx
+                          ? "w-6 h-2 bg-[#0D9488] dark:bg-[#2DD4BF]"
+                          : !isDark
+                          ? "w-2 h-2 bg-slate-300 hover:bg-slate-400"
+                          : "w-2 h-2 bg-white/30 hover:bg-white/50"
+                      }`}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex items-center justify-center gap-1.5 py-0.5">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-[#C59B27] dark:text-[#FBBF24]">
+                    ★ Colección Exclusiva Catálogo 2027 ★
+                  </span>
+                </div>
+              )}
 
               <button
                 type="button"
                 onClick={() => {
-                  setIsCatalogModalOpen(false);
+                  setActiveCatalogType(null);
                   setIsSizeGuideOpen(true);
                 }}
                 className={`text-center text-[11px] font-bold transition-colors py-0.5 flex items-center justify-center gap-1 cursor-pointer ${
