@@ -53,6 +53,42 @@ export default function BioLinksBeach() {
   const [touchEnd, setTouchEnd] = useState(null);
   const minSwipeDistance = 45;
 
+  // Pre-carregamento imediato em background das imagens dos catálogos (elimina qualquer delay/tela preta)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const allImagesToPreload = [
+      ...collection2027.map((p) => p.image),
+      ...products.map((p) => p.image),
+    ].filter(Boolean);
+
+    const warmCache = () => {
+      allImagesToPreload.forEach((src) => {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = src;
+      });
+    };
+
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(warmCache);
+    } else {
+      setTimeout(warmCache, 100);
+    }
+  }, []);
+
+  const handlePrewarm = (type) => {
+    if (typeof window === "undefined") return;
+    const targetList = type === "2027" ? collection2027 : products;
+    targetList.forEach((item) => {
+      if (item.image) {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = item.image;
+      }
+    });
+  };
+
   const handlePrevSlide = () => {
     setActiveSlide((prev) => (prev === 0 ? currentCatalogProducts.length - 1 : prev - 1));
   };
@@ -196,6 +232,8 @@ export default function BioLinksBeach() {
       actionText: "Ver 11 modelos exclusivos (Bikinis, Bañadores y Packs)",
       badgeColor: "moss",
       icon: ShoppingBag,
+      onMouseEnter: () => handlePrewarm("2026"),
+      onTouchStart: () => handlePrewarm("2026"),
       onClick: () => {
         setActiveCatalogType("2026");
         setActiveSlide(0);
@@ -207,6 +245,8 @@ export default function BioLinksBeach() {
       actionText: "Mis modelos trajes festival artesanal (€ 248,90)",
       badgeColor: "moss",
       icon: ShoppingBag,
+      onMouseEnter: () => handlePrewarm("2027"),
+      onTouchStart: () => handlePrewarm("2027"),
       onClick: () => {
         setActiveCatalogType("2027");
         setActiveSlide(0);
@@ -402,6 +442,8 @@ export default function BioLinksBeach() {
                   ? {
                       type: "button",
                       onClick: link.onClick,
+                      onMouseEnter: link.onMouseEnter,
+                      onTouchStart: link.onTouchStart,
                     }
                   : {
                       href: link.href,
@@ -517,7 +559,9 @@ export default function BioLinksBeach() {
               <div className="space-y-2">
                 {/* Container da Foto em Tamanho Extra Ampliado (Aspect Ratio 9:13) */}
                 <div
-                  className="relative aspect-[9/13] w-full rounded-2xl sm:rounded-3xl overflow-hidden bg-slate-900 shadow-xl group select-none cursor-pointer border border-black/5 dark:border-white/10"
+                  className={`relative aspect-[9/13] w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl group select-none cursor-pointer border border-black/5 dark:border-white/10 transition-colors ${
+                    !isDark ? "bg-[#EDE5D8]" : "bg-[#162032]"
+                  }`}
                   onDoubleClick={handleDoubleTapLike}
                 >
                   {/* Botão Fechar (X) Flutuante sobre a Imagem */}
@@ -546,6 +590,9 @@ export default function BioLinksBeach() {
                     src={currentProduct.image}
                     alt=""
                     aria-hidden="true"
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125 pointer-events-none"
                   />
 
@@ -553,10 +600,12 @@ export default function BioLinksBeach() {
                   <img
                     src={currentProduct.image}
                     alt={currentProduct.name}
+                    loading="eager"
+                    fetchPriority="high"
+                    decoding="async"
                     className={`relative z-10 w-full h-full ${
                       isZoomFit ? "object-contain" : "object-cover object-[center_18%]"
-                    } transition-all duration-500 group-hover:scale-[1.02]`}
-                    loading="lazy"
+                    } transition-all duration-300 group-hover:scale-[1.02]`}
                   />
 
                   {/* Efeito Visual de Coração Gigante Flutuante ao Dar Dois Toques */}

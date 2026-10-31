@@ -229,7 +229,7 @@ export const TENERIFE_BEACH_DATA = {
       priceEur: "€ 248,90",
       priceBrl: "R$ 1.490",
       oldPriceEur: "€ 295,00",
-      image: "/images/moda_praia_festival_2027.png",
+      image: "/images/moda_praia_festival_2027.webp",
       description: "Exclusivo traje de festival confeccionado artesanalmente con flecos fluidos en cascada, bordados de encaje calado hechos a mano y sensual abertura cut-out lateral. La máxima expresión de lujo bohemio para beach clubs y festivales de verano.",
       features: [
         "Flecos fluidos de seda confeccionados artesanalmente",
@@ -247,7 +247,7 @@ export const TENERIFE_BEACH_DATA = {
       priceEur: "€ 248,90",
       priceBrl: "R$ 1.490",
       oldPriceEur: "€ 295,00",
-      image: "/images/moda_praia12.png",
+      image: "/images/moda_praia12.webp",
       description: "Espectacular conjunto festival de dos piezas en rosa empolvado con microlentejuelas reflectantes y falda asimétrica con flecos largos de seda. Un look magnético de pasarela para atardeceres y fiestas exclusivas en Canarias.",
       features: [
         "Top corsetero con tirante fruncido y escote corazón",
