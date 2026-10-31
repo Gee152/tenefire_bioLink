@@ -242,7 +242,7 @@ export default function BioLinksBeach() {
     {
       id: "catalogo-2027",
       name: "Colección Catálogo 2027",
-      actionText: "Mis modelos trajes festival artesanal (€ 248,90)",
+      actionText: "Modelos trajes festival artesanal (desde € 89,90)",
       badgeColor: "moss",
       icon: ShoppingBag,
       onMouseEnter: () => handlePrewarm("2027"),

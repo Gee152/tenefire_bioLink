@@ -226,9 +226,9 @@ export const TENERIFE_BEACH_DATA = {
       name: "Traje Festival Artesanal Flecos & Bordados 2027",
       subType: "Colección Festival Artesanal",
       highlightBadge: "Exclusivo 2027",
-      priceEur: "€ 248,90",
-      priceBrl: "R$ 1.490",
-      oldPriceEur: "€ 295,00",
+      priceEur: "€ 89,90",
+      priceBrl: "R$ 490",
+      oldPriceEur: "€ 119,00",
       image: "/images/moda_praia_festival_2027.webp",
       description: "Exclusivo traje de festival confeccionado artesanalmente con flecos fluidos en cascada, bordados de encaje calado hechos a mano y sensual abertura cut-out lateral. La máxima expresión de lujo bohemio para beach clubs y festivales de verano.",
       features: [
@@ -237,25 +237,25 @@ export const TENERIFE_BEACH_DATA = {
         "Estructura cut-out lateral anatómica que estiliza la silueta",
         "Edición limitada y numerada Colección Catálogo 2027"
       ],
-      whatsappMessage: "¡Hola Tenerife Beach! Quiero información y reservar el Traje Festival Artesanal de la Colección Catálogo 2027 (€ 248,90).",
+      whatsappMessage: "¡Hola Tenerife Beach! Quiero información y reservar el Traje Festival Artesanal de la Colección Catálogo 2027 (€ 89,90).",
     },
     {
       id: "conjunto-festival-glamour-rose-2027",
       name: "Conjunto Festival Glamour Lentejuelas & Flecos Rosé 2027",
       subType: "Conjunto Dos Piezas Festival",
       highlightBadge: "Tendencia 2027",
-      priceEur: "€ 248,90",
-      priceBrl: "R$ 1.490",
-      oldPriceEur: "€ 295,00",
+      priceEur: "€ 90,90",
+      priceBrl: "R$ 495",
+      oldPriceEur: "€ 120,00",
       image: "/images/moda_praia12.webp",
       description: "Espectacular conjunto festival de dos piezas en rosa empolvado con microlentejuelas reflectantes y falda asimétrica con flecos largos de seda. Un look magnético de pasarela para atardeceres y fiestas exclusivas en Canarias.",
       features: [
         "Top corsetero con tirante fruncido y escote corazón",
         "Falda midi asimétrica bordada en microlentejuelas",
-        "Flecos fluidos de seda en cascada con movimiento hipnótico",
+        "Flecos fluidos de seda en cascada con movimento hipnótico",
         "Confección artesanal de lujo Colección Festival 2027"
       ],
-      whatsappMessage: "¡Hola Tenerife Beach! Quiero información y reservar el Conjunto Festival Glamour Lentejuelas & Flecos Rosé (€ 248,90).",
+      whatsappMessage: "¡Hola Tenerife Beach! Quiero información y reservar el Conjunto Festival Glamour Lentejuelas & Flecos Rosé (€ 90,90).",
     }
   ],
   sizeGuide: [
