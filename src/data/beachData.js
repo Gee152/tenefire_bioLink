@@ -8,7 +8,7 @@ export const TENERIFE_BEACH_DATA = {
     badgeVerified: "Tienda Oficial Tenerife",
     handle: "@tenerife_beach",
     instagram: "https://www.instagram.com/tenerife_beach/",
-    whatsappNumber: "34612345678",
+    whatsappNumber: "34671610019",
     whatsappDisplay: "+34671610019",
     address: "Calle Los Calados, Nº 1, 3º C",
     postalCode: "38111",
