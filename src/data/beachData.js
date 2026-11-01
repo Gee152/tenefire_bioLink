@@ -9,7 +9,7 @@ export const TENERIFE_BEACH_DATA = {
     handle: "@tenerife_beach",
     instagram: "https://www.instagram.com/tenerife_beach/",
     whatsappNumber: "34612345678",
-    whatsappDisplay: "+34 612 34 56 78",
+    whatsappDisplay: "+34671610019",
     address: "Calle Los Calados, Nº 1, 3º C",
     postalCode: "38111",
     city: "Santa Cruz de Tenerife",
