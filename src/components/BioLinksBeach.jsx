@@ -14,12 +14,26 @@ import {
   Ruler,
   Truck,
   ShieldCheck,
-  Heart,
-  Maximize2
+  Heart
 } from "lucide-react";
 import { TENERIFE_BEACH_DATA, getWhatsAppUrl } from "../data/beachData.js";
 import LogoTenerifeBeach from "./ui/LogoTenerifeBeach.jsx";
 import WhatsAppIcon from "./ui/WhatsAppIcon.jsx";
+
+function getImageOptionLabel(src, index, product = null) {
+  if (product?.imageLabels && product.imageLabels[index]) {
+    return product.imageLabels[index];
+  }
+  if (!src) return ["A", "B", "C", "D", "E", "F"][index] || String(index + 1);
+  const match = src.match(/_?([A-Za-z])\.(png|webp|jpe?g)$/i);
+  if (match && match[1]) {
+    const letter = match[1].toUpperCase();
+    if (["A", "B", "C", "D", "E", "F"].includes(letter)) {
+      return letter;
+    }
+  }
+  return ["A", "B", "C", "D", "E", "F"][index] || String(index + 1);
+}
 
 export default function BioLinksBeach() {
   const { brand, products, collection2027 = [], sizeGuide } = TENERIFE_BEACH_DATA;
@@ -35,15 +49,26 @@ export default function BioLinksBeach() {
   const [activeCatalogType, setActiveCatalogType] = useState(null);
   const [isSizeGuideOpen, setIsSizeGuideOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const isCatalogModalOpen = Boolean(activeCatalogType);
   const currentCatalogProducts = activeCatalogType === "2027" ? collection2027 : products;
+
+  // Modelo e imagens complementares atuais (A, B, C)
+  const currentProduct = currentCatalogProducts[activeSlide] || currentCatalogProducts[0] || products[0];
+  const currentProductImages =
+    currentProduct?.images && currentProduct.images.length > 0
+      ? currentProduct.images
+      : currentProduct?.image
+      ? [currentProduct.image]
+      : [];
+  const safeImageIndex = Math.min(activeImageIndex, Math.max(0, currentProductImages.length - 1));
+  const currentImage = currentProductImages[safeImageIndex] || currentProduct?.image;
 
   // Instagram interactions
   const [likes, setLikes] = useState({});
   const [bookmarks, setBookmarks] = useState({});
   const [showHeartAnim, setShowHeartAnim] = useState(false);
-  const [isZoomFit, setIsZoomFit] = useState(false);
 
   // Toast notification for clipboard copy
   const [toastMessage, setToastMessage] = useState("");
@@ -53,13 +78,13 @@ export default function BioLinksBeach() {
   const [touchEnd, setTouchEnd] = useState(null);
   const minSwipeDistance = 45;
 
-  // Pre-carregamento imediato em background das imagens dos catálogos (elimina qualquer delay/tela preta)
+  // Pre-carregamento imediato em background de TODAS as fotos (A, B, C) de ambos os catálogos
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const allImagesToPreload = [
-      ...collection2027.map((p) => p.image),
-      ...products.map((p) => p.image),
+      ...collection2027.flatMap((p) => p.images || [p.image]),
+      ...products.flatMap((p) => p.images || [p.image]),
     ].filter(Boolean);
 
     const warmCache = () => {
@@ -81,20 +106,49 @@ export default function BioLinksBeach() {
     if (typeof window === "undefined") return;
     const targetList = type === "2027" ? collection2027 : products;
     targetList.forEach((item) => {
-      if (item.image) {
-        const img = new Image();
-        img.decoding = "async";
-        img.src = item.image;
-      }
+      const list = item.images || [item.image];
+      list.forEach((src) => {
+        if (src) {
+          const img = new Image();
+          img.decoding = "async";
+          img.src = src;
+        }
+      });
     });
   };
 
+  // Regra de navegação: percorre A, B, C do mesmo modelo antes de passar para o próximo
   const handlePrevSlide = () => {
-    setActiveSlide((prev) => (prev === 0 ? currentCatalogProducts.length - 1 : prev - 1));
+    if (safeImageIndex > 0) {
+      // Volta para a imagem complementar anterior do mesmo modelo (C -> B ou B -> A)
+      setActiveImageIndex((prev) => prev - 1);
+    } else {
+      // Está na primeira imagem (A): volta para o modelo anterior e posiciona na última imagem disponível dele
+      const prevModelIndex = activeSlide === 0 ? currentCatalogProducts.length - 1 : activeSlide - 1;
+      const prevModel = currentCatalogProducts[prevModelIndex];
+      const prevImages =
+        prevModel?.images && prevModel.images.length > 0
+          ? prevModel.images
+          : [prevModel?.image];
+      setActiveSlide(prevModelIndex);
+      setActiveImageIndex(prevImages.length - 1);
+    }
   };
 
   const handleNextSlide = () => {
-    setActiveSlide((prev) => (prev === currentCatalogProducts.length - 1 ? 0 : prev + 1));
+    if (safeImageIndex < currentProductImages.length - 1) {
+      // Avança para a próxima foto complementar (B, C) do mesmo modelo (preço mantido)
+      setActiveImageIndex((prev) => prev + 1);
+    } else {
+      // Não há mais opções de foto para este modelo: passa para o próximo modelo, iniciando na foto A (0)
+      setActiveSlide((prev) => (prev === currentCatalogProducts.length - 1 ? 0 : prev + 1));
+      setActiveImageIndex(0);
+    }
+  };
+
+  const handleSelectModel = (idx) => {
+    setActiveSlide(idx);
+    setActiveImageIndex(0);
   };
 
   const onTouchStart = (e) => {
@@ -123,6 +177,7 @@ export default function BioLinksBeach() {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
         setActiveCatalogType(null);
+        setActiveImageIndex(0);
         setIsSizeGuideOpen(false);
       } else if (isCatalogModalOpen) {
         if (e.key === "ArrowLeft") handlePrevSlide();
@@ -141,7 +196,7 @@ export default function BioLinksBeach() {
       document.body.style.overflow = "";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isCatalogModalOpen, isSizeGuideOpen, currentCatalogProducts.length]);
+  }, [isCatalogModalOpen, isSizeGuideOpen, activeSlide, safeImageIndex, currentCatalogProducts.length]);
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -164,8 +219,6 @@ export default function BioLinksBeach() {
       showToast("¡Enlace copiado al portapapeles! 🏖️");
     }
   };
-
-  const currentProduct = currentCatalogProducts[activeSlide] || currentCatalogProducts[0] || products[0];
 
   const isCurrentLiked = Boolean(likes[currentProduct?.id]);
   const isCurrentBookmarked = Boolean(bookmarks[currentProduct?.id]);
@@ -229,7 +282,7 @@ export default function BioLinksBeach() {
     {
       id: "catalogo-interativo",
       name: "Colección & Catálogo 2026",
-      actionText: "Ver 11 modelos exclusivos (Bikinis, Bañadores y Packs)",
+      actionText: `Ver ${products.length} modelos exclusivos (Bikinis, Bañadores y Sungas)`,
       badgeColor: "moss",
       icon: ShoppingBag,
       onMouseEnter: () => handlePrewarm("2026"),
@@ -237,12 +290,13 @@ export default function BioLinksBeach() {
       onClick: () => {
         setActiveCatalogType("2026");
         setActiveSlide(0);
+        setActiveImageIndex(0);
       },
     },
     {
       id: "catalogo-2027",
       name: "Colección Catálogo 2027",
-      actionText: "Modelos trajes festival artesanal (desde € 89,90)",
+      actionText: `Ver ${collection2027.length} trajes festival artesanal (€ 60,90)`,
       badgeColor: "moss",
       icon: ShoppingBag,
       onMouseEnter: () => handlePrewarm("2027"),
@@ -250,6 +304,7 @@ export default function BioLinksBeach() {
       onClick: () => {
         setActiveCatalogType("2027");
         setActiveSlide(0);
+        setActiveImageIndex(0);
       },
     },
     {
@@ -538,7 +593,10 @@ export default function BioLinksBeach() {
           aria-label={activeCatalogType === "2027" ? "Colección Catálogo 2027 - Trajes Festival Artesanal" : "Catálogo Tenerife Beach 2026"}
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md overflow-y-auto select-none"
           onClick={(e) => {
-            if (e.target === e.currentTarget) setActiveCatalogType(null);
+            if (e.target === e.currentTarget) {
+              setActiveCatalogType(null);
+              setActiveImageIndex(0);
+            }
           }}
         >
           <div
@@ -564,30 +622,83 @@ export default function BioLinksBeach() {
                   }`}
                   onDoubleClick={handleDoubleTapLike}
                 >
+                  {/* Barra de Progresso Segmentada Estilo Instagram Story para fotos complementares */}
+                  {currentProductImages.length > 1 && (
+                    <div className="absolute top-2 inset-x-3 z-30 flex items-center gap-1.5 pointer-events-none">
+                      {currentProductImages.map((_, imgIdx) => (
+                        <div
+                          key={imgIdx}
+                          className={`h-1 flex-1 rounded-full transition-all duration-300 ${
+                            safeImageIndex === imgIdx
+                              ? "bg-[#D4AF37] shadow-[0_0_8px_rgba(212,175,55,0.9)]"
+                              : "bg-white/35 backdrop-blur-sm"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  )}
+
                   {/* Botão Fechar (X) Flutuante sobre a Imagem */}
                   <button
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
                       setActiveCatalogType(null);
+                      setActiveImageIndex(0);
                     }}
                     aria-label="Cerrar catálogo"
-                    className="absolute top-3 right-3 z-30 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-lg active:scale-90 cursor-pointer border border-white/20"
+                    className={`absolute ${
+                      currentProductImages.length > 1 ? "top-4" : "top-3"
+                    } right-3 z-30 w-9 h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center backdrop-blur-md transition-all shadow-lg active:scale-90 cursor-pointer border border-white/20`}
                   >
                     <X size={18} />
                   </button>
 
-                  {/* Contador Pílula Flutuante sobre a Imagem */}
-                  <div className="absolute top-3 left-3 z-30 pointer-events-none flex items-center gap-1.5">
+                  {/* Contador Pílula do Modelo + Seletores de Opção A, B, C */}
+                  <div
+                    className={`absolute ${
+                      currentProductImages.length > 1 ? "top-4" : "top-3"
+                    } left-3 z-30 flex items-center gap-2 pointer-events-auto`}
+                  >
                     <span className="text-[10.5px] font-extrabold px-2.5 py-1 rounded-full bg-black/60 text-white backdrop-blur-md tracking-wider border border-white/20 shadow-lg">
                       {activeCatalogType === "2027"
                         ? `Catálogo 2027 • ${activeSlide + 1} / ${currentCatalogProducts.length}`
-                        : `${activeSlide + 1} / ${currentCatalogProducts.length}`}
+                        : `Modelo ${activeSlide + 1} / ${currentCatalogProducts.length}`}
                     </span>
+
+                    {/* Botões seletores táteis de Opção A, B, C */}
+                    {currentProductImages.length > 1 && (
+                      <div className="flex items-center gap-1 bg-black/60 backdrop-blur-md p-0.5 rounded-full border border-white/20 shadow-lg">
+                        {currentProductImages.map((imgSrc, imgIdx) => {
+                          const optionLetter = getImageOptionLabel(imgSrc, imgIdx, currentProduct);
+                          const isActive = safeImageIndex === imgIdx;
+                          return (
+                            <button
+                              key={imgIdx}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveImageIndex(imgIdx);
+                              }}
+                              title={`Ver Opción ${optionLetter} del modelo`}
+                              aria-label={`Ver Opción ${optionLetter}`}
+                              className={`min-w-[22px] h-[22px] px-1.5 rounded-full text-[10px] font-black transition-all flex items-center justify-center cursor-pointer ${
+                                isActive
+                                  ? "bg-[#D4AF37] text-[#0A2540] shadow-sm scale-105"
+                                  : "text-white/75 hover:text-white hover:bg-white/15"
+                              }`}
+                            >
+                              {optionLetter}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
-                  {/* Fundo com Blur da Própria Imagem para Garantir Amplo Alcance Sem Barras Negras */}
+
+                  {/* Fundo com Blur da Imagem Atual para Garantir Amplo Alcance Sem Barras Negras */}
                   <img
-                    src={currentProduct.image}
+                    src={currentImage}
                     alt=""
                     aria-hidden="true"
                     loading="eager"
@@ -596,16 +707,15 @@ export default function BioLinksBeach() {
                     className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125 pointer-events-none"
                   />
 
-                  {/* Foto Principal com Enquadramento Perfeito da Peça */}
+                  {/* Foto Principal com Enquadramento Completo da Peça (Zero Corte) */}
                   <img
-                    src={currentProduct.image}
-                    alt={currentProduct.name}
+                    key={currentImage}
+                    src={currentImage}
+                    alt={`${currentProduct.name} - Opción ${getImageOptionLabel(currentImage, safeImageIndex, currentProduct)}`}
                     loading="eager"
                     fetchPriority="high"
                     decoding="async"
-                    className={`relative z-10 w-full h-full ${
-                      isZoomFit ? "object-contain" : "object-cover object-[center_18%]"
-                    } transition-all duration-300 group-hover:scale-[1.02]`}
+                    className="relative z-10 w-full h-full object-contain object-center transition-all duration-300 group-hover:scale-[1.01]"
                   />
 
                   {/* Efeito Visual de Coração Gigante Flutuante ao Dar Dois Toques */}
@@ -617,30 +727,22 @@ export default function BioLinksBeach() {
                     </div>
                   )}
 
-                  {/* Overlay de Informações (Badges, Título e Descrição) com Blur Preto Suave */}
-                  <div className="absolute inset-x-2.5 bottom-2.5 z-20 p-3 sm:p-3.5 rounded-2xl bg-black/20 backdrop-blur-md border border-white/15 text-white shadow-xl space-y-1.5 pointer-events-auto">
-                    {/* Linha Superior: Título da Peça e Botão Maximize */}
-                    <div className="flex items-start justify-between gap-2">
-                      <h4 className="text-[13.5px] sm:text-[14.5px] font-black text-white leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)] flex-1">
+                  {/* Overlay de Informações (Badges, Título e Subtítulo) com Fundo Light Glass e Texto Preto */}
+                  <div className="absolute inset-x-2.5 bottom-2.5 z-20 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-white/85 dark:bg-[#162032]/85 backdrop-blur-md border border-white/60 dark:border-white/15 text-black dark:text-white shadow-xl space-y-0.5 pointer-events-auto transition-colors">
+                    {/* Linha Superior: Título da Peça e Tag de Opção */}
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <h4 className="text-xs sm:text-[13px] font-black text-black dark:text-white leading-tight">
                         {currentProduct.name}
                       </h4>
-
-                      {/* Botão de Alternar Enquadramento Inteiro/Cover */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setIsZoomFit(!isZoomFit);
-                        }}
-                        title={isZoomFit ? "Volver al Modo Editorial" : "Ajustar Foto Completa"}
-                        className="p-1.5 rounded-full bg-white/15 hover:bg-white/25 text-white backdrop-blur-md border border-white/20 active:scale-90 transition-all cursor-pointer shrink-0"
-                      >
-                        <Maximize2 size={12} />
-                      </button>
+                      {currentProductImages.length > 1 && (
+                        <span className="text-[9px] font-black uppercase tracking-wider text-[#927010] dark:text-[#FBBF24] bg-[#D4AF37]/15 px-2 py-0.5 rounded-full border border-[#D4AF37]/40 shadow-sm shrink-0">
+                          Opción {getImageOptionLabel(currentImage, safeImageIndex, currentProduct)} de {currentProductImages.length}
+                        </span>
+                      )}
                     </div>
 
-                    {/* Descrição com Blur Suave e Alta Legibilidade */}
-                    <p className="text-[11px] sm:text-[11.5px] text-white/95 leading-relaxed font-normal drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+                    {/* Subtítulo / Descrição Compacta em Preto */}
+                    <p className="text-[10px] sm:text-[10.5px] text-black dark:text-slate-200 leading-snug font-medium line-clamp-2">
                       {currentProduct.description}
                     </p>
                   </div>
@@ -728,7 +830,7 @@ export default function BioLinksBeach() {
                     <button
                       key={idx}
                       type="button"
-                      onClick={() => setActiveSlide(idx)}
+                      onClick={() => handleSelectModel(idx)}
                       aria-label={`Ir a pieza ${idx + 1}`}
                       className={`transition-all rounded-full cursor-pointer ${
                         activeSlide === idx
@@ -752,6 +854,7 @@ export default function BioLinksBeach() {
                 type="button"
                 onClick={() => {
                   setActiveCatalogType(null);
+                  setActiveImageIndex(0);
                   setIsSizeGuideOpen(true);
                 }}
                 className={`text-center text-[11px] font-bold transition-colors py-0.5 flex items-center justify-center gap-1 cursor-pointer ${

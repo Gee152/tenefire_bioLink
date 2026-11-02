@@ -52,13 +52,13 @@ export default function LogoTenerifeBeach({ isDark = false, className = "" }) {
         </span>
       </h1>
 
-      {/* Subtítulo Editorial em Verde Musgo com Traços Dourados */}
+      {/* Subtítulo Editorial em Preto com Traços Dourados */}
       <div className="flex items-center gap-2 mt-1.5">
         <span className={`h-[1.5px] w-4 transition-colors ${!isDark ? "bg-[#D4AF37]" : "bg-[#FBBF24]/70"}`} />
         <span
           className={`font-sans font-extrabold text-[9.5px] tracking-[0.28em] uppercase transition-colors ${
             !isDark
-              ? "text-[#234E2A] [text-shadow:_0_1px_4px_rgba(255,255,255,0.8)]"
+              ? "text-black [text-shadow:_0_1px_4px_rgba(255,255,255,0.8)]"
               : "text-[#D4AF37]"
           }`}
         >
