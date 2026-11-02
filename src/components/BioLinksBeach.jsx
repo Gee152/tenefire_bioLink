@@ -704,7 +704,7 @@ export default function BioLinksBeach() {
                     loading="eager"
                     fetchPriority="high"
                     decoding="async"
-                    className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125 pointer-events-none"
+                    className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-55 scale-125 pointer-events-none"
                   />
 
                   {/* Foto Principal com Enquadramento Completo da Peça (Zero Corte) */}
@@ -727,8 +727,8 @@ export default function BioLinksBeach() {
                     </div>
                   )}
 
-                  {/* Overlay de Informações (Badges, Título e Subtítulo) com Fundo Light Glass e Texto Preto */}
-                  <div className="absolute inset-x-2.5 bottom-2.5 z-20 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-white/85 dark:bg-[#162032]/85 backdrop-blur-md border border-white/60 dark:border-white/15 text-black dark:text-white shadow-xl space-y-0.5 pointer-events-auto transition-colors">
+                  {/* Overlay de Informações com Efeito Frosted Glassmorphism Blur Profundo */}
+                  <div className="absolute inset-x-2.5 bottom-2.5 z-20 p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-white/55 dark:bg-[#0F1622]/65 backdrop-blur-xl backdrop-saturate-150 border border-white/50 dark:border-white/20 text-black dark:text-white shadow-[0_8px_30px_rgba(0,0,0,0.15)] space-y-0.5 pointer-events-auto transition-all">
                     {/* Linha Superior: Título da Peça e Tag de Opção */}
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <h4 className="text-xs sm:text-[13px] font-black text-black dark:text-white leading-tight">
